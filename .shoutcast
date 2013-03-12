@@ -1,0 +1,33 @@
+#!/bin/bash
+#This is the url:port to the ShoutCast radio server
+
+/bin/date
+
+#Make sure mpd is stopped
+running=`ps -A | grep -o mpd`
+if [ $running == "mpd" ]; then
+	pid=`ps -A | grep mpd | grep -oE "[0-9]+ \?" | grep -oE "[0-9]+"`
+	sudo /bin/kill $pid
+fi
+
+#Delete settings files
+sudo /bin/rm -R /var/lib/mpd/*
+sudo /bin/rm -R /var/lib/mpd/.*
+sudo /bin/touch /var/lib/mpd/state
+sudo /bin/touch /var/lib/mpd/sticker.sql
+sudo /bin/touch /var/lib/mpd/tag_cache
+sudo /bin/mkdir /var/lib/mpd/music
+sudo /bin/mkdir /var/lib/mpd/playlists
+
+#start the daemon and be sure the playlist is empty
+sudo /usr/bin/mpd -v
+running=`mpc playlist`
+if [ $running != "" ]; then
+	/usr/bin/mpc clear
+fi
+
+#add the playlist and get it playing!
+/usr/bin/mpc add $shoutcast_radio_link
+/usr/bin/mpc repeat on
+/usr/bin/mpc volume 100
+/usr/bin/mpc play
