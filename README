@@ -1,24 +1,26 @@
                          ┌────────────────────────────┐
                          │  Concerto for Raspberry Pi │
                          │      By: Andrew Fryer      │
-                         │      January 18, 2013      │
+                         │       March 13, 2013       │
 ╔════════════════════════╧════════════════════════════╧══════════════════════════╗
-║ 1. Introduction ────────────────────────────────────────────────────── Line 24 ║
+║ 1. Introduction ────────────────────────────────────────────────────── Line 26 ║
 ║                                                                                ║
-║ 2. Setting up the Raspberry Pi ─────────────────────────────────────── Line 35 ║
+║ 2. Setting up the Raspberry Pi ─────────────────────────────────────── Line 37 ║
 ║   a. Required materials and software                                           ║
 ║   b. Installing the OS                                                         ║
 ║                                                                                ║
-║ 3. Setting up Concerto ─────────────────────────────────────────────── Line 55 ║
+║ 3. Setting up Concerto ─────────────────────────────────────────────── Line 57 ║
 ║   a. Automatic Installation                                                    ║
 ║         I. Required Files                                                      ║
-║        II. Installing Concerto for Pi                                          ║
+║        II. Installing Concerto and ShoutCast for Pi                            ║
 ║   b. Manual Installation                                                       ║
 ║         I. Required Software                                                   ║
 ║        II. Installing the Script                                               ║
 ║       III. Setting up the Cron Job                                             ║
 ║                                                                                ║
-║ 4. Changing the Server URL/IP Address ─────────────────────────────── Line 109 ║
+║ 4. Changing the Server URL/IP Addresses ───────────────────────────── Line 135 ║
+║   a. Concerto Server Address                                                   ║
+║   b. ShoutCast Server Address                                                  ║
 ╚════════════════════════════════════════════════════════════════════════════════╝
 ╔════════════════════════════════════════════════════════════════════════════════╗
 ║ 1. Introduction                                                                ║
@@ -59,6 +61,7 @@
 ║           - InstallConcertoForPi.sh                                            ║
 ║           - .crontab                                                           ║
 ║           - .script                                                            ║
+║           - .shoutcast                                                         ║
 ║      II. Installing Concerto for Pi                                            ║
 ║           - Extract the files onto the Raspberry Pi. You can do this by        ║
 ║             either downloading the ConcertoForPi.zip from a network location   ║
@@ -70,50 +73,82 @@
 ║           - Follow the on-screen instructions and your done! (your mouse       ║
 ║             should disappear when ever it's not moving. The Raspberry Pi       ║
 ║             should not turn off while inactive and the Midori browser          ║
-║             should begin to automatically start.)                              ║
+║             should begin to automatically start. Music should also play if you ║
+║             chose to configure your Pi for a shout cast playback)              ║
 ║                                                                                ║
 ║    b. Manual Installation                                                      ║
 ║       I. Required Software                                                     ║
 ║          This software must be installed onto the Raspberry Pi                 ║
 ║           - x11-xserver-utils                                                  ║
 ║           - unclutter                                                          ║
+║           (For ShoutCast)                                                      ║
+║           - alsa-utils                                                         ║
+║           - mpd                                                                ║
+║           - mpc                                                                ║
 ║          To install the software, open a command prompt and enter the          ║
 ║          following command:                                                    ║
 ║              sudo apt-get install x11-xserver-utils unclutter                  ║
-║      II. Installing the Script                                                 ║
-║          For this you will need the .script file. This script is what          ║
-║          automates opening the Midori browser to the Concerto web page and     ║
-║          making sure the computer does not fall asleep.                        ║
-║           - First copy the file to the home folder. If you're not sure where   ║
-║             that is, enter the following into a terminal: echo $HOME           ║
+║           (For ShoutCast also enter)                                           ║
+║              sudo apt-get install alsa-utils                                   ║
+║              sudo echo "snd_bcm2835" >> /etc/modules                           ║
+║              sudo apt-get install mpd mpc                                      ║
+║              sudo /etc/init.d/mpd stop                                         ║
+║              sudo chmod -x /etc/init.d/mpd                                     ║
+║      II. Installing the Scripts                                                ║
+║          For this you will need the .script and .shoutcast files. This script  ║
+║          is what automates opening the Midori browser to the Concerto web page ║
+║          and making sure the computer does not fall asleep.                    ║
+║           (Concerto Script)                                                    ║
+║           - First copy the .script file to the home folder. If you're not sure ║
+║             where that is, enter the following into a terminal: echo $HOME     ║
 ║           - Rename the file to "digitalsignage.sh"                             ║
 ║           - Next, open the file in a text editor and just after the line       ║
 ║             'LOG="./digitalsignage.log"' add the following on its own line:    ║
-║                ConcertoServerIP=""                                             ║
-║           - Fill in the "" with either the web URL or IP address of the        ║
-║             Concerto server.                                                   ║
+║                ConcertoServerIP="<CONCERTO_URL>"                               ║
+║           - Replacing <CONCERTO_URL> with either the web URL or IP address of  ║
+║             the Concerto server.                                               ║
+║           - Save the document and move on to the next step.                    ║
+║           (ShoutCast Script)                                                   ║
+║           - First copy the .shoutcast file to the home folder. If you're not   ║
+║             sure where that is, enter the following into a terminal:echo $HOME ║
+║           - Rename the file to "shoutcast-radio.sh"                            ║
+║           - Next, open the file in a text editor and just after the first two  ║
+║             lines (which are just file comments) add the following on its own  ║
+║             line: shoutcast_radio_link="<SHOUTCAST_URL>"                       ║
+║           - Replacing <SHOUTCAST_URL> with either the web URL or IP address    ║
+║             and port of the Concerto server.                                   ║
+║           - Save the document and move on to the next step.                    ║
 ║     III. Setting up the Cron Job                                               ║
 ║           - Open a terminal and enter the following command:                   ║
 ║                 crontab -eu $USER                                              ║
 ║           - You should now see a command line text editor. Scroll down to the  ║
 ║             bottom of the file and add the following line (include every       ║
 ║             character including the *s):                                       ║
-║               * * * * * export DISPLAY=:0 && /bin/bash $HOME/digitalsignage.sh ║
-║           - Replace the $HOME portion with the direct path to the              ║
-║             digitalsignage.sh file. ie. /home/user/digitalsignage.sh           ║
+║      * * * * * export DISPLAY=:0 && /bin/bash $HOME/digitalsignage.sh          ║
+║            (For ShoutCast also add the following line beneath the previous)    ║
+║      @reboot   /bin/bash $HOME/shoutcast-radio.sh &> $HOME/shoutcast-radio.log ║
 ║           - Once done, save the document and close. If the editor does not     ║
-║             show instructions on how to do so it is most likely the vim        ║
+║             show instructions on how to do so it is most likely the 'vim'      ║
 ║             editor. To exit hit [Esc] and then enter ':x' and hit enter. That  ║
 ║             should save and close the document.                                ║
 ╟────────────────────────────────────────────────────────────────────────────────╢
-║ 4. Changing the Server URL/IP Address                                          ║
-║    Changing the server URL/IP Address is fairly simple to do.                  ║
-║    - First navigate to the digitalsignage.sh file is located. It should be the ║
-║      user's home folder which can be found by entering the following in a      ║
-║      terminal: echo $HOME                                                      ║
-║    - Open the digitalsignage.sh file in a text editor.                         ║
-║    - Locate the line that starts with 'ConcertoServerIP='                      ║
-║    - Inside the "" on that line is where the Concerto Server URL/IP Address    ║
-║       is stored.                                                               ║
-║    - Change it to the new address and save the file.                           ║
+║ 4. Changing the Server URL/IP Addresses                                        ║
+║    a. Concerto Server Address                                                  ║
+║       - First navigate to the digitalsignage.sh file is located. It should be  ║
+║         the user's home folder which can be found by entering the following in ║
+║         a terminal: echo $HOME                                                 ║
+║       - Open the digitalsignage.sh file in a text editor.                      ║
+║       - Locate the line that starts with 'ConcertoServerIP='                   ║
+║       - Inside the double quotes("") on that line is where the Concerto Server ║
+║         URL/IP Address is stored.                                              ║
+║       - Change it to the new address and save the file.                        ║
+║    b. ShoutCast Server Address                                                 ║
+║       - First navigate to the shoutcast-radio.sh file is located. It should be ║
+║         the user's home folder which can be found by entering the following in ║
+║         a terminal: echo $HOME                                                 ║
+║       - Open the shoutcast-radio.sh file in a text editor.                     ║
+║       - Locate the line that starts with 'shoutcast_radio_link='               ║
+║       - Inside the double quotes("") on that line is where the ShoutCast       ║
+║         Server URL/IP Address is stored.                                       ║
+║       - Change it to the new address and save the file.                        ║
 ╚════════════════════════════════════════════════════════════════════════════════╝
