@@ -19,40 +19,40 @@
 #This is just a simple menu asking the user if they wish to proceed with installing the Concerto scripts
 while true;
 do
-    echo "Concerto Client Configuration Script"
-    echo -n "Do you wish to proceed [y/n]?"
+    /bin/echo "Concerto Client Configuration Script"
+    /bin/echo -n "Do you wish to proceed [y/n]?"
     read x
     case $x in
       y|Y)
         break
       ;;
       n|N)
-        echo OK.
+        /bin/echo OK.
         exit
       ;;
       *)
-        echo "Invalid command '$x'"
+        /bin/echo "Invalid command '$x'"
       ;;
     esac
 done
 
 #This command will install the XSettings and the Unclutter programs
-echo "INSTALLING REQUIRED PROGRAMS"
-sudo apt-get -y --force-yes install x11-xserver-utils unclutter
+/bin/echo "INSTALLING REQUIRED PROGRAMS"
+sudo /usr/bin/apt-get -y --force-yes install x11-xserver-utils unclutter
 
 #This copies the Concerto script to the home directory
-echo "COPYING CRONJOB SCRIPT TO $HOME"
+/bin/echo "COPYING CRONJOB SCRIPT TO $HOME"
 #get the Concerto server web address, wether it be an IP or URL
 gettingip=true
 while $gettingip;
 do
-    echo "Please enter the Concerto Servers URL/IP address"
-    echo -n "(www.example.com/concerto OR 123.4.5.67):"
+    /bin/echo "Please enter the Concerto Servers URL/IP address"
+    /bin/echo -n "(www.example.com/concerto OR 123.4.5.67):"
     read ip
     while true;
     do
-        echo "You entered: $ip"
-        echo -n "Is this correct [y/n]?"
+        /bin/echo "You entered: $ip"
+        /bin/echo -n "Is this correct [y/n]?"
         read x
         case $x in
           y|Y)
@@ -63,84 +63,91 @@ do
             break
           ;;
           *)
-            echo "Invalid command '$x'"
+            /bin/echo "Invalid command '$x'"
           ;;
         esac
     done
 done
-echo
+/bin/echo
 while true;
 do
-    echo "Do you wish to setup a ShoutCast Playback?"
-    echo -n "[y/n]? "
+    /bin/echo "Do you wish to setup a ShoutCast Playback?"
+    /bin/echo -n "[y/n]? "
     read x
     case $x in
       y|Y)
-			sudo apt-get -y --force-yes install alsa-utils
-			res=`sudo cat /etc/modules | grep snd_bcm2835`
-			if [ "$res" == "" ]; then
-				sudo echo "snd_bcm2835" >> /etc/modules
-			fi
-			sudo apt-get install -y --force-yes install mpd mpc
-			sudo /etc/init.d/mpd stop
-			sudo /bin/chmod -x /etc/init.d/mpd
-			shoutcast=1
-			#get the ShoutCast Radio server web address, wether it be an IP or URL
-			gettingip=true
-			while $gettingip;
+		sudo /usr/bin/apt-get -y --force-yes install alsa-utils
+		res=`sudo cat /etc/modules | grep snd_bcm2835`
+		if [ "$res" == "" ]; then
+			sudo /bin/echo "snd_bcm2835" >> /etc/modules
+		fi
+		sudo /usr/bin/apt-get install -y --force-yes install mpd mpc
+		sudo /etc/init.d/mpd stop
+		sudo /bin/chmod -x /etc/init.d/mpd
+		shoutcast=1
+		#get the ShoutCast Radio server web address, wether it be an IP or URL
+		gettingip=true
+		while $gettingip;
+		do
+			/bin/echo "Please enter the ShoutCast Radio [URL/IP][:port] address"
+			/bin/echo "(http://radio.example.com:8000/ OR http://123.4.5.67:8000/)"
+			/bin/echo -n " >> "
+			read radio
+			while true;
 			do
-				echo "Please enter the ShoutCast Radio [URL/IP][:port] address"
-				echo "(http://radio.example.com:8000/ OR http://123.4.5.67:8000/)"
-				echo -n " >> "
-				read radio
-				while true;
-				do
-					echo "You entered: $radio"
-					echo -n "Is this correct [y/n]?"
-					read x
-					case $x in
-					  y|Y)
-						gettingip=false
-						break
-					  ;;
-					  n|N)
-						break
-					  ;;
-					  *)
-						echo "Invalid command '$x'"
-					  ;;
-					esac
-				done
+				/bin/echo "You entered: $radio"
+				/bin/echo -n "Is this correct [y/n]?"
+				read x
+				case $x in
+				  y|Y)
+					gettingip=false
+					break
+				  ;;
+				  n|N)
+					break
+				  ;;
+				  *)
+					/bin/echo "Invalid command '$x'"
+				  ;;
+				esac
 			done
-			echo
-			#Copy the radio script file header then inject the user's given ShoutCast radio server web address and then append the rest of the script
-			head -n 2 ./.shoutcast > $HOME/shoutcast-radio.sh
-			echo 'shoutcast_radio_link="'$radio'"' >> $HOME/shoutcast-radio.sh
-			tail --lines=+3 ./.shoutcast >> $HOME/shoutcast-radio.sh
+		done
+		/bin/echo
+		#Copy the radio script file header then inject the user's given ShoutCast radio server web address and then append the rest of the script
+		/usr/bin/head -n 2 ./.shoutcast > $HOME/shoutcast-radio.sh
+		/bin/echo 'shoutcast_radio_link="'$radio'"' >> $HOME/shoutcast-radio.sh
+		/usr/bin/tail --lines=+3 ./.shoutcast >> $HOME/shoutcast-radio.sh
+        break
       ;;
       n|N)
-        echo OK.
+        /bin/echo OK.
         break
       ;;
       *)
-        echo "Invalid command '$x'"
+        /bin/echo "Invalid command '$x'"
       ;;
     esac
 done
 #Copy the concerto script file header then inject the user's given Concerto server web address and then append the rest of the script
-head -n 4 ./.script > $HOME/digitalsignage.sh
-echo 'ConcertoServerIP="'$ip'"' >> $HOME/digitalsignage.sh
-tail --lines=+5 ./.script >> $HOME/digitalsignage.sh
+/usr/bin/head -n 4 ./.script > $HOME/digitalsignage.sh
+/bin/echo 'ConcertoServerIP="'$ip'"' >> $HOME/digitalsignage.sh
+/usr/bin/tail --lines=+5 ./.script >> $HOME/digitalsignage.sh
 
 #This sets up a Cron job (Cron is a task scheduler) that will run the previous Concerto script every minute
-echo "SETTING UP CONCERTO CRON JOB"
+/bin/echo "SETTING UP CONCERTO CRON JOB"
 cp ./.crontab ./.tmp
-echo "* * * * * export DISPLAY=:0 && /bin/bash $HOME/digitalsignage.sh" >> ./.tmp
+/bin/echo "* * * * * export DISPLAY=:0 && /bin/bash $HOME/digitalsignage.sh" >> ./.tmp
 if [ $shoutcast ]; then
-	echo "@reboot   /bin/bash $HOME/shoutcast-radio.sh &> $HOME/shoutcast-radio.log" >> ./.tmp
+	/bin/echo "@reboot   /bin/bash $HOME/shoutcast-radio.sh &> $HOME/shoutcast-radio.log" >> ./.tmp
 fi
-crontab -u $USER ./.tmp
-rm ./.tmp
+/usr/bin/crontab -u $USER ./.tmp
+/bin/rm ./.tmp
+
+/bin/echo "SETTING UP AUTO-LOGIN"
+/bin/echo 'if [ "`/bin/ps -A | /bin/grep -o -E "startx"`" == "" ]; then' >> ~/.bashrc
+/bin/echo "    startx" >> ~/.bashrc
+/bin/echo "fi" >> ~/.bashrc
+sudo /usr/bin/perl -pi -e 's/1:2345:respawn:\/sbin\/getty --noclear 38400 tty1/1:2345:re$
 
 #And we're done :)
 echo "DONE."
