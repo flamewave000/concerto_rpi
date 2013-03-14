@@ -17,6 +17,7 @@
 ║         I. Required Software                                                   ║
 ║        II. Installing the Script                                               ║
 ║       III. Setting up the Cron Job                                             ║
+║        IV. Setting up AutoLogin                                                ║
 ║                                                                                ║
 ║ 4. Changing the Server URL/IP Addresses ───────────────────────────── Line 135 ║
 ║   a. Concerto Server Address                                                   ║
@@ -38,9 +39,10 @@
 ║                                                                                ║
 ║    a. Required materials and software                                          ║
 ║        - Raspberry Pi Model B and a 5V-1A MicroUSB Power Supply                ║
-║        - Standard SD card 4GB or more                                          ╨
-║        - Raspbery Pi's Wheezy Linux Distro OS (http://downloads.raspberrypi.org/download.php?file=/images/raspbian/2012-12-16-wheezy-raspbian/2012-12-16-wheezy-raspbian.zip)
-║        - Win32 Imager (https://launchpad.net/win32-image-writer/+download)     ╥
+║        - Standard SD card 4GB or more                                          ║
+╨        - Raspbery Pi's Wheezy Linux Distro OS                                  ╨
+(http://downloads.raspberrypi.org/download.php?file=/images/raspbian/2012-12-16-wheezy-raspbian/2012-12-16-wheezy-raspbian.zip)
+╥        - Win32 Imager (https://launchpad.net/win32-image-writer/+download)     ╥
 ║                                                                                ║
 ║    b. Installing the OS                                                        ║
 ║        - Begin by first formatting the SD card.This can be either a full       ║
@@ -53,6 +55,20 @@
 ║          OS. The next thing is to test it to make sure it works.               ║
 ║        - Place the card in the Raspberry Pi and start it up. If it works       ║
 ║          great! If not, try reinstalling the OS.                               ║
+║        - Once the Pi starts up for the first time you will see a blue screen   ║
+║          menu. This is for the initial Pi system setup. You can adjust the     ║
+║          system timezone, keyboard layout etc. Make sure that the SSH is       ║
+║          enabled so you can remote connect to it later on.                     ║
+║        - Once you're finished setting that up and have left the menu you will  ║
+║          eventually reach a prompt. If you are asked to log in the default     ║
+║          user and password are as follows:                                     ║
+║              user: pi                                                          ║
+║              pass: raspberry                                                   ║
+║        - Once your at the "pi@raspberrypi ~ $" prompt, enter the 'startx'      ║
+║          command. This will begin the Wheezy GUI program which eventually give ║
+║          you a nice desktop and mouse.                                         ║
+║        - At this point you are done. When the desktop starts up you can        ║
+║          proceed to section 3. Setting up Concerto.                            ║
 ╟────────────────────────────────────────────────────────────────────────────────╢
 ║ 3. Setting up Concerto                                                         ║
 ║    a. Automatic Installation                                                   ║
@@ -131,6 +147,24 @@
 ║             show instructions on how to do so it is most likely the 'vim'      ║
 ║             editor. To exit hit [Esc] and then enter ':x' and hit enter. That  ║
 ║             should save and close the document.                                ║
+║      IV. Setting up AutoLogin                                                  ║
+║           - First, open the .bashrc file that is located in /home/pi. This is  ║
+║             a hidden file so you may need to right click and select the        ║
+║             "Show Hidden" option.                                              ║
+║           - Once it is open in a text editor, scroll to the very bottom and    ║
+║             add the following three lines of code and then save the file.      ║
+║                 if [ "`/bin/ps -A | /bin/grep -o -E "startx"`" == "" ]; then   ║
+║                     startx                                                     ║
+║                 fi                                                             ║
+║           - That code insures that when you auto login, the desktop will       ║
+║             automatically load as well.                                        ║
+║           - Next we need to make our pi login automatically. First navigate to ║
+║             the /sbin folder and open the file "inittab" in a text editor.     ║
+║           - Once open, search through the file until you find the following:   ║
+║                 1:2345:respawn:/sbin/ghetty --noclear 38400 tty1               ║
+╨           - You must replace the previous line you just found with this one:   ╨
+1:2345:respawn:/sbin/getty --noclear 38400 tty1/1:2345:respawn:/bin/login -f pi tty1</dev/tty1 >/dev/tty1 2>&1
+╥                                                                                ╥
 ╟────────────────────────────────────────────────────────────────────────────────╢
 ║ 4. Changing the Server URL/IP Addresses                                        ║
 ║    a. Concerto Server Address                                                  ║

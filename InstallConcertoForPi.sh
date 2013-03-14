@@ -147,7 +147,7 @@ fi
 /bin/echo 'if [ "`/bin/ps -A | /bin/grep -o -E "startx"`" == "" ]; then' >> ~/.bashrc
 /bin/echo "    startx" >> ~/.bashrc
 /bin/echo "fi" >> ~/.bashrc
-sudo /usr/bin/perl -pi -e 's/1:2345:respawn:\/sbin\/getty --noclear 38400 tty1/1:2345:re$
+sudo /usr/bin/perl -pi -e 's/1:2345:respawn:\/sbin\/getty --noclear 38400 tty1/1:2345:respawn:\/bin\/login -f pi tty1<\/dev\/tty1 >\/dev\/tty1 2>\&1/g' /etc/inittab
 
 #And we're done :)
 echo "DONE."
