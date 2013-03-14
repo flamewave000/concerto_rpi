@@ -76,6 +76,7 @@ do
     read x
     case $x in
       y|Y)
+		sudo /usr/bin/apt-get update
 		sudo /usr/bin/apt-get -y --force-yes install alsa-utils
 		res=`sudo cat /etc/modules | grep snd_bcm2835`
 		if [ "$res" == "" ]; then
