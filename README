@@ -161,7 +161,7 @@
 ║           - Next we need to make our pi login automatically. First navigate to ║
 ║             the /sbin folder and open the file "inittab" in a text editor.     ║
 ║           - Once open, search through the file until you find the following:   ║
-║                 1:2345:respawn:/sbin/ghetty --noclear 38400 tty1               ║
+║                 1:2345:respawn:/sbin/getty --noclear 38400 tty1                ║
 ╨           - You must replace the previous line you just found with this one:   ╨
 1:2345:respawn:/sbin/getty --noclear 38400 tty1/1:2345:respawn:/bin/login -f pi tty1</dev/tty1 >/dev/tty1 2>&1
 ╥                                                                                ╥
