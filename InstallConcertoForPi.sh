@@ -82,7 +82,7 @@ do
 		if [ "$res" == "" ]; then
 			sudo /bin/echo "snd_bcm2835" >> /etc/modules
 		fi
-		sudo /usr/bin/apt-get install -y --force-yes install mpd mpc
+		sudo /usr/bin/apt-get -y --force-yes install mpd mpc
 		sudo /etc/init.d/mpd stop
 		sudo /bin/chmod -x /etc/init.d/mpd
 		shoutcast=1
