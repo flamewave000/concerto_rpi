@@ -3,13 +3,13 @@
                          │      By: Andrew Fryer      │
                          │       March 13, 2013       │
 ╔════════════════════════╧════════════════════════════╧══════════════════════════╗
-║ 1. Introduction ────────────────────────────────────────────────────── Line 26 ║
+║ 1. Introduction ────────────────────────────────────────────────────── Line 28 ║
 ║                                                                                ║
-║ 2. Setting up the Raspberry Pi ─────────────────────────────────────── Line 37 ║
+║ 2. Setting up the Raspberry Pi ─────────────────────────────────────── Line 39 ║
 ║   a. Required materials and software                                           ║
 ║   b. Installing the OS                                                         ║
 ║                                                                                ║
-║ 3. Setting up Concerto ─────────────────────────────────────────────── Line 57 ║
+║ 3. Setting up Concerto ─────────────────────────────────────────────── Line 75 ║
 ║   a. Automatic Installation                                                    ║
 ║         I. Required Files                                                      ║
 ║        II. Installing Concerto and ShoutCast for Pi                            ║
@@ -19,9 +19,10 @@
 ║       III. Setting up the Cron Job                                             ║
 ║        IV. Setting up AutoLogin                                                ║
 ║                                                                                ║
-║ 4. Changing the Server URL/IP Addresses ───────────────────────────── Line 135 ║
+║ 4. Changing the Concerto Settings ─────────────────────────────────── Line 175 ║
 ║   a. Concerto Server Address                                                   ║
 ║   b. ShoutCast Server Address                                                  ║
+║   c. Automatic Daily Reboot                                                    ║
 ╚════════════════════════════════════════════════════════════════════════════════╝
 ╔════════════════════════════════════════════════════════════════════════════════╗
 ║ 1. Introduction                                                                ║
@@ -34,16 +35,17 @@
 ║    device from going to sleep due to inactivity. Also, if the Midori browser   ║
 ║    were to crash or close, we want to automatically restart the browser as     ║
 ║    soon as possible.                                                           ║
-╟────────────────────────────────────────────────────────────────────────────────╢
+╠════════════════════════════════════════════════════════════════════════════════╣
 ║ 2. Setting up the Raspberry Pi                                                 ║
 ║                                                                                ║
 ║    a. Required materials and software                                          ║
 ║        - Raspberry Pi Model B and a 5V-1A MicroUSB Power Supply                ║
-║        - Standard SD card 4GB or more                                          ║
+║        - Standard SD card 4GB or more (class 6 or better)                      ║
 ╨        - Raspbery Pi's Wheezy Linux Distro OS                                  ╨
-(http://downloads.raspberrypi.org/download.php?file=/images/raspbian/2012-12-16-wheezy-raspbian/2012-12-16-wheezy-raspbian.zip)
-╥        - Win32 Imager (https://launchpad.net/win32-image-writer/+download)     ╥
-║                                                                                ║
+http://downloads.raspberrypi.org/download.php?file=/images/raspbian/2012-12-16-wheezy-raspbian/2012-12-16-wheezy-raspbian.zip
+         - Win32 Imager (use secure mirror link to download)
+http://www.softpedia.com/get/CD-DVD-Tools/Data-CD-DVD-Burning/Win32-Disk-Imager.shtml
+╥                                                                                ╥
 ║    b. Installing the OS                                                        ║
 ║        - Begin by first formatting the SD card.This can be either a full       ║
 ║          format or a quick format. If the SD is already formatted then you     ║
@@ -69,7 +71,7 @@
 ║          you a nice desktop and mouse.                                         ║
 ║        - At this point you are done. When the desktop starts up you can        ║
 ║          proceed to section 3. Setting up Concerto.                            ║
-╟────────────────────────────────────────────────────────────────────────────────╢
+╠════════════════════════════════════════════════════════════════════════════════╣
 ║ 3. Setting up Concerto                                                         ║
 ║    a. Automatic Installation                                                   ║
 ║       I. Required Files                                                        ║
@@ -83,10 +85,10 @@
 ║             either downloading the ConcertoForPi.zip from a network location   ║
 ║             or by transferring it with a USB flash drive.                      ║
 ║           - Once extracted, open a command prompt (linux terminal)             ║
-║           - Navigate to the extracted files using the cd command               ║
+║           - Navigate to the extracted files using the cd and ls commands       ║
 ║           - Type the following command:                                        ║
-║                 bash InstallConcertoForPi.sh                                   ║
-║           - Follow the on-screen instructions and your done! (your mouse       ║
+╟────────────────┤bash InstallConcertoForPi.sh├──────────────────────────────────╢
+║           - Follow the on-screen instructions and you're done! (your mouse     ║
 ║             should disappear when ever it's not moving. The Raspberry Pi       ║
 ║             should not turn off while inactive and the Midori browser          ║
 ║             should begin to automatically start. Music should also play if you ║
@@ -103,13 +105,13 @@
 ║           - mpc                                                                ║
 ║          To install the software, open a command prompt and enter the          ║
 ║          following command:                                                    ║
-║              sudo apt-get install x11-xserver-utils unclutter                  ║
+╟─────────────┤sudo apt-get install x11-xserver-utils unclutter├─────────────────╢
 ║           (For ShoutCast also enter)                                           ║
-║              sudo apt-get install alsa-utils                                   ║
-║              sudo echo "snd_bcm2835" >> /etc/modules                           ║
-║              sudo apt-get install mpd mpc                                      ║
-║              sudo /etc/init.d/mpd stop                                         ║
-║              sudo chmod -x /etc/init.d/mpd                                     ║
+║             │sudo apt-get install alsa-utils        │                          ║
+║             │sudo echo "snd_bcm2835" >> /etc/modules│                          ║
+╟─────────────┤sudo apt-get install mpd mpc           ├──────────────────────────╢
+║             │sudo /etc/init.d/mpd stop              │                          ║
+║             │sudo chmod -x /etc/init.d/mpd          │                          ║
 ║      II. Installing the Scripts                                                ║
 ║          For this you will need the .script and .shoutcast files. This script  ║
 ║          is what automates opening the Midori browser to the Concerto web page ║
@@ -120,7 +122,7 @@
 ║           - Rename the file to "digitalsignage.sh"                             ║
 ║           - Next, open the file in a text editor and just after the line       ║
 ║             'LOG="./digitalsignage.log"' add the following on its own line:    ║
-║                ConcertoServerIP="<CONCERTO_URL>"                               ║
+╟───────────────┤ConcertoServerIP="<CONCERTO_URL>"├──────────────────────────────╢
 ║           - Replacing <CONCERTO_URL> with either the web URL or IP address of  ║
 ║             the Concerto server.                                               ║
 ║           - Save the document and move on to the next step.                    ║
@@ -136,13 +138,17 @@
 ║           - Save the document and move on to the next step.                    ║
 ║     III. Setting up the Cron Job                                               ║
 ║           - Open a terminal and enter the following command:                   ║
-║                 crontab -eu $USER                                              ║
+╟────────────────┤crontab -eu $USER├─────────────────────────────────────────────╢
 ║           - You should now see a command line text editor. Scroll down to the  ║
 ║             bottom of the file and add the following line (include every       ║
 ║             character including the *s):                                       ║
-║      * * * * * export DISPLAY=:0 && /bin/bash $HOME/digitalsignage.sh          ║
-║            (For ShoutCast also add the following line beneath the previous)    ║
-║      @reboot   /bin/bash $HOME/shoutcast-radio.sh &> $HOME/shoutcast-radio.log ║
+╟───────┤* * * * * export DISPLAY=:0 && /bin/bash $HOME/digitalsignage.sh├───────╢
+║             (For ShoutCast also add the following line beneath the previous)   ║
+╟───────┤@reboot /bin/bash $HOME/shoutcast-radio.sh &> $HOME/shoutcast-radio.log├╢
+║             (For the automatic daily reboot, add the following as well)        ║
+╟───────┤M H * * * sudo reboot├──────────────────────────────────────────────────╢
+║             (Replace 'M' with a minute value 0-59.)                            ║
+║             (Replace 'H' with an hour value 0-23. 0=12am, 23=11pm)             ║
 ║           - Once done, save the document and close. If the editor does not     ║
 ║             show instructions on how to do so it is most likely the 'vim'      ║
 ║             editor. To exit hit [Esc] and then enter ':x' and hit enter. That  ║
@@ -153,20 +159,20 @@
 ║             "Show Hidden" option.                                              ║
 ║           - Once it is open in a text editor, scroll to the very bottom and    ║
 ║             add the following three lines of code and then save the file.      ║
-║                 if [ "`/bin/ps -A | /bin/grep -o -E "startx"`" == "" ]; then   ║
-║                     startx                                                     ║
-║                 fi                                                             ║
+║                │if [ "`/bin/ps -A | /bin/grep -o -E "startx"`" == "" ]; then│  ║
+╟────────────────┤    startx                                                  ├──╢
+║                │fi                                                          │  ║
 ║           - That code insures that when you auto login, the desktop will       ║
 ║             automatically load as well.                                        ║
 ║           - Next we need to make our pi login automatically. First navigate to ║
 ║             the /sbin folder and open the file "inittab" in a text editor.     ║
 ║           - Once open, search through the file until you find the following:   ║
-║                 1:2345:respawn:/sbin/getty --noclear 38400 tty1                ║
+╟────────────────┤1:2345:respawn:/sbin/getty --noclear 38400 tty1├───────────────╢
 ╨           - You must replace the previous line you just found with this one:   ╨
 1:2345:respawn:/sbin/getty --noclear 38400 tty1/1:2345:respawn:/bin/login -f pi tty1</dev/tty1 >/dev/tty1 2>&1
 ╥                                                                                ╥
-╟────────────────────────────────────────────────────────────────────────────────╢
-║ 4. Changing the Server URL/IP Addresses                                        ║
+╠════════════════════════════════════════════════════════════════════════════════╣
+║ 4. Changing the Concerto Settings                                              ║
 ║    a. Concerto Server Address                                                  ║
 ║       - First navigate to the digitalsignage.sh file is located. It should be  ║
 ║         the user's home folder which can be found by entering the following in ║
@@ -185,4 +191,20 @@
 ║       - Inside the double quotes("") on that line is where the ShoutCast       ║
 ║         Server URL/IP Address is stored.                                       ║
 ║       - Change it to the new address and save the file.                        ║
+║    c. Automatic Daily Reboot                                                   ║
+║       - Open a terminal and enter the following:                               ║
+╟──────────┤crontab -eu $USER├───────────────────────────────────────────────────╢
+║       - Find the following line: (The #'s will have actual numbers)            ║
+╟──────────┤# # * * * sudo reboot├───────────────────────────────────────────────╢
+║       - To stop the automatic reboot, you can place a single '#' at the        ║
+║         beginning of the line. This comments out the line and therefore        ║
+║         disables it.                                                           ║
+║       - To change the time, replace the first number with the minute value you ║ 
+║         wish (0-59), and the second number with the hour value you wish        ║
+║         (0-23, 0=12am 23=11pm)                                                 ║
+║         ie. "30  7 * * * sudo reboot" will reboot at 7:30am                    ║
+║             "15 15 * * * sudo reboot" will reboot at 3:15pm                    ║
+║       - When you are finished, save the file and close. If there are no        ║
+║         onscreen instructions on how to do this, try hitting [Esc] then typing ║
+║         ":x" and hitting enter.                                                ║
 ╚════════════════════════════════════════════════════════════════════════════════╝

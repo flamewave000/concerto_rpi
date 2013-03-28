@@ -141,6 +141,83 @@ cp ./.crontab ./.tmp
 if [ $shoutcast ]; then
 	/bin/echo "@reboot   /bin/bash $HOME/shoutcast-radio.sh &> $HOME/shoutcast-radio.log" >> ./.tmp
 fi
+/bin/echo
+while true;
+do
+    /bin/echo "Do you wish to have the Pi automatically reboot once a day?"
+    /bin/echo -n "[y/n]? "
+    read x
+    case $x in
+      y|Y)
+		#get the time they wish to reboot
+		/bin/echo "*!Remember to set your Pi's date, time, and timezone!*"
+		gettinghour=true
+		while $gettinghour;
+		do
+			/bin/echo "Please enter the hour you wish the Pi to restart."
+			/bin/echo "(24 hour time indicated by 0-23, 0=12am, 23=11pm)"
+			/bin/echo -n " >> "
+			read hour
+			while true;
+			do
+				/bin/echo "You entered: $hour"
+				/bin/echo -n "Is this correct [y/n]?"
+				read x
+				case $x in
+				  y|Y)
+					gettinghour=false
+					break
+				  ;;
+				  n|N)
+					break
+				  ;;
+				  *)
+					/bin/echo "Invalid command '$x'"
+				  ;;
+				esac
+			done
+		done
+		#get the time they wish to reboot
+		gettingminute=true
+		while $gettingminute;
+		do
+			/bin/echo "Please enter the minute you wish the Pi to restart."
+			/bin/echo "(minutes indicated by 0-59)"
+			/bin/echo -n " >> "
+			read minute
+			while true;
+			do
+				/bin/echo "You entered: $minute"
+				/bin/echo -n "Is this correct [y/n]?"
+				read x
+				case $x in
+				  y|Y)
+					gettingminute=false
+					break
+				  ;;
+				  n|N)
+					break
+				  ;;
+				  *)
+					/bin/echo "Invalid command '$x'"
+				  ;;
+				esac
+			done
+		done
+		/bin/echo "Automatic Restart time selected as $hour:$minute"
+		/bin/echo
+		/bin/echo "$minute $hour * * * /usr/bin/sudo /sbin/reboot" >> ./.tmp
+        break
+      ;;
+      n|N)
+        /bin/echo OK.
+        break
+      ;;
+      *)
+        /bin/echo "Invalid command '$x'"
+      ;;
+    esac
+done
 /usr/bin/crontab -u $USER ./.tmp
 /bin/rm ./.tmp
 
